@@ -28,7 +28,14 @@ struct ContentView: View {
         
         if let output = try? model.prediction(image: buffer) {
             
-            classificationLabel = output.classLabel
+            let result = output.classLabelProbs.sorted(by: { $0.1 > $1.1 }).first
+            
+            if let text = result.map({ "\($0)\n\($1 * 100)%" }) {
+                
+                classificationLabel = text
+                
+            }
+            
         }
         
     }
