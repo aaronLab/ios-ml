@@ -13,6 +13,8 @@ struct ContentView: View {
     let photos = ["banana","tiger","bottle"]
     @State private var currentIndex: Int = 0
     
+    let model = MobileNetV2()
+    
     var body: some View {
         VStack {
             Image(photos[currentIndex])
