@@ -8,12 +8,30 @@
 
 import SwiftUI
 
+let kImageClassificationSize: CGSize = CGSize(width: 224, height: 224)
+
 struct ContentView: View {
     
     let photos = ["banana","tiger","bottle"]
     @State private var currentIndex: Int = 0
+    @State private var classificationLabel: String = " "
     
     let model = MobileNetV2()
+    
+    private func performImageClassification() {
+        
+        let currentImageName = photos[currentIndex]
+        
+        guard let image = UIImage(named: currentImageName),
+              let resizedImage = image.resizeTo(size: kImageClassificationSize),
+              let buffer = resizedImage.toBuffer() else { return }
+        
+        if let output = try? model.prediction(image: buffer) {
+            
+            classificationLabel = output.classLabel
+        }
+        
+    }
     
     var body: some View {
         VStack {
@@ -54,13 +72,15 @@ struct ContentView: View {
             
             Button("Classify") {
                 // classify the image here
-                
+                performImageClassification()
             }.padding()
             .foregroundColor(Color.white)
             .background(Color.green)
             .cornerRadius(8)
             
-            Text("")
+            Text(classificationLabel)
+                .font(.largeTitle)
+                .padding()
         }
     }
 }
